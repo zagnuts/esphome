@@ -1,42 +1,35 @@
-#ifndef _CST816D_H
-#define _CST816D_H
+#pragma once
 
-#include <Wire.h>
+#include "esphome/components/i2c/i2c.h"
+#include "esphome/components/touchscreen/touchscreen.h"
+#include "esphome/core/automation.h"
+#include "esphome/core/component.h"
+#include "esphome/core/hal.h"
 
-#define I2C_ADDR_CST816D 0x15
+namespace esphome {
+namespace cst816d {
 
-//手势
-enum GESTURE
-{
-    None = 0x00,       //无手势
-    SlideDown = 0x01,  //向下滑动
-    SlideUp = 0x02,    //向上滑动
-    SlideLeft = 0x03,  //向左滑动
-    SlideRight = 0x04, //向右滑动
-    SingleTap = 0x05,  //单击
-    DoubleTap = 0x0B,  //双击
-    LongPress = 0x0C   //长按
+struct Store {
+  volatile bool touch;
+  ISRInternalGPIOPin pin;
+
+  static void gpio_intr(Store *store);
 };
 
-/**************************************************************************/
-/*!
-    @brief  CST816D I2C CTP controller driver
-*/
-/**************************************************************************/
-class CST816D
-{
-public:
-    CST816D(int8_t sda_pin = -1, int8_t scl_pin = -1, int8_t rst_pin = -1, int8_t int_pin = -1);
+using namespace touchscreen;
 
-    void begin(void);
-    bool getTouch(uint16_t *x, uint16_t *y, uint8_t *gesture);
+class cst816dTouchscreen : public Touchscreen, public Component, public i2c::I2CDevice {
+ public:
+  void setup() override;
+  void loop() override;
+  void dump_config() override;
 
-private:
-    int8_t _sda, _scl, _rst, _int;
+  void set_interrupt_pin(InternalGPIOPin *pin) { this->interrupt_pin_ = pin; }
 
-    uint8_t i2c_read(uint8_t addr);
-    uint8_t i2c_read_continuous(uint8_t addr, uint8_t *data, uint32_t length);
-    void i2c_write(uint8_t addr, uint8_t data);
-    uint8_t i2c_write_continuous(uint8_t addr, const uint8_t *data, uint32_t length);
+ protected:
+  InternalGPIOPin *interrupt_pin_;
+  Store store_;
 };
-#endif
+
+}  // namespace cst816d
+}  // namespace esphome
