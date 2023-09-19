@@ -5,19 +5,19 @@ from esphome import pins
 from esphome.components import i2c, touchscreen
 from esphome.const import CONF_ID, CONF_INTERRUPT_PIN
 
-from .. import cst81d_ns
+from .. import cst816d_ns
 
 CODEOWNERS = ["@zagnuts"]
 DEPENDENCIES = ["i2c"]
 
-cst81dTouchscreen = cst81d_ns.class_(
-    "cst81dTouchscreen",
+cst81dTouchscreen = cst816d_ns.class_(
+    "cst816dTouchscreen",
     touchscreen.Touchscreen,
     cg.Component,
     i2c.I2CDevice,
 )
 
-CONF_CST81D_TOUCHSCREEN_ID = "cst81d_touchscreen_id"
+CONF_CST81D_TOUCHSCREEN_ID = "cst816d_touchscreen_id"
 
 CONFIG_SCHEMA = touchscreen.TOUCHSCREEN_SCHEMA.extend(
     cv.Schema(
