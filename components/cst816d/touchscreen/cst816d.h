@@ -11,7 +11,6 @@ namespace cst816d {
 
 #define I2C_ADDR_CST816D 0x15
 
-//手势
 enum GESTURE
 {
     None = 0x00,       //无手势
