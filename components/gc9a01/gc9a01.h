@@ -1,14 +1,18 @@
 #pragma once
 
 #include "esphome/core/component.h"
+#include "esphome/core/version.h"
 #include "esphome/components/spi/spi.h"
 #include "esphome/components/display/display_buffer.h"
 
 namespace esphome {
 namespace gc9a01 {
 
-class GC9A01 : public PollingComponent,
-               public display::DisplayBuffer,
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2023, 12, 0)
+class GC9A01 : public display::DisplayBuffer,
+#else
+class GC9A01 : public PollingComponent, public display::DisplayBuffer,
+#endif  // VERSION_CODE(2023, 12, 0)
                public spi::SPIDevice<spi::BIT_ORDER_MSB_FIRST, spi::CLOCK_POLARITY_LOW, spi::CLOCK_PHASE_LEADING,
                                      spi::DATA_RATE_40MHZ> {
  public:
